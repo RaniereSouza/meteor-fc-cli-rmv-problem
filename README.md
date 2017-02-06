@@ -1,5 +1,5 @@
 # meteor-fc-cli-rmv-problem
-Minimal reproduction of a (possible) error happening within the Client side Remove operation of FileCollection
+Minimal reproduction of a (possible) error happening within the Client side Remove operation of FileCollection Meteor package
 
 To reproduce the error, just do the following steps:
 

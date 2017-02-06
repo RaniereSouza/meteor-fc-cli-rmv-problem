@@ -1,6 +1,8 @@
 # meteor-fc-cli-rmv-problem
 Minimal reproduction of a (possible) error happening within the Client side Remove operation of FileCollection Meteor package
 
+(refers to <a href="https://github.com/vsivsi/meteor-file-collection/issues/152">Issue \#152</a> from the Meteor Atmosphere package <a href="https://github.com/vsivsi/meteor-file-collection">vsivsi:file-collection</a>)
+
 To reproduce the error, just do the following steps:
 
 1. Clone this repository to your machine;

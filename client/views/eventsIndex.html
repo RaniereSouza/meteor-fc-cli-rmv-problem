@@ -1,0 +1,25 @@
+<template name="eventsIndex">
+
+	<p>
+		<a href="{{pathFor 'eventsInsert'}}" class="btn btn-default add-event"><span class="glyphicon glyphicon-plus"></span>&nbsp;Add Event</a>
+	</p>
+
+	{{#each events}}
+		<div class="container-fluid">
+			<img src="{{#if image}}{{image.url}}{{/if}}" alt="{{name}}" class="img-responsive col-md-2">
+			<div class="event-info col-md-10">
+				<h2 class="event-name">{{nome}}</h2>
+				<p class="event-date">{{formatDateTime date}}</p>
+				{{#if description}}
+					<p class="event-description">{{description}}</p>
+				{{/if}}
+				<p>
+					<a href="{{pathFor 'eventsUpdate'}}" class="btn btn-default edt-event">Edit Event</a>
+					<a href="" class="btn btn-danger rmv-event">Remove Event</a>
+				</p>
+			</div>
+		</div>
+	{{else}}
+		<p>No Events inserted yet.</p>
+	{{/each}}
+</template>

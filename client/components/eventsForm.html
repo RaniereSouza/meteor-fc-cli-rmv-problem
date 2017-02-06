@@ -1,0 +1,64 @@
+<template name="eventsForm">
+
+	<div id="cropBannerModal" class="modal fade">
+
+		<div class="modal-dialog">
+
+		    <div class="modal-content col-md-12">
+
+			    <div class="modal-header">
+			        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+			        <h3 class="modal-title">
+			            EVENT BANNER    
+			        </h3>
+			        <h4 class="modal-title">
+			            Choose your Banner image and upload it
+			        </h4>
+			    </div>
+
+			    <div class="modal-body">
+
+			        <div class="canvas" style="max-width: 500px; max-height: 500px;"></div>
+
+			        <button class="btn btn-primary btn-zoom-plus-modal-partner hidden hidden-xs"><i class="fa fa-search-plus" aria-hidden="true"></i></button>
+
+			        <button class="btn btn-primary btn-zoom-minus-modal-partner hidden hidden-xs"><i class="fa fa-search-minus" aria-hidden="true"></i></button>
+
+			        <p class="partner-crop-img-label hidden">Preview:</p>
+			        <div id="partner-crop-img-preview" class="hidden"></div>
+
+			        <input type="file" accept="image/*" id="partner-image-upload" class="">
+			        <label for="partner-image-upload" class="btn btn-success partner-image-btn"><span class="glyphicon glyphicon-folder-open"></span>&nbsp;&nbsp;Choose a file...</label>
+
+			        <button class="btn btn-danger partner-change-img-btn hidden"><span class="glyphicon glyphicon-trash"></span>&nbsp;&nbsp;Change image</button>
+
+			        <button class="btn btn-success partner-crop-img-btn hidden"><span class="fa fa-crop"></span>&nbsp;&nbsp;Crop image</button>
+
+			        <button class="btn btn-success partner-accept-img-btn hidden"><span class="glyphicon glyphicon-save"></span>&nbsp;&nbsp;Accept</button>
+			    </div>
+		    </div>
+		</div>
+	</div>
+
+	{{#autoForm id="eventsForm" type=formType collection=collectionName doc=model}}
+
+		<div class="form-group col-md-12">
+
+			<label for="">Image (best size 500x500)</label>
+
+			<br>
+
+			<button id="cropped-banner-add" class="btn btn-default" data-toggle="modal" data-target="#cropBannerModal">Add Banner</button>
+
+			<button id="cropped-banner-remove" class="btn btn-danger hidden">Remove Banner</button>
+
+			<div id="cropped-banner-preview" class=""></div>  
+	    </div>
+
+		{{> afQuickField name="name"}}
+
+		{{> afQuickField name="date" type="bootstrap-datetimepicker"}}
+
+		{{> afQuickField name="description" rows=5}}
+	{{/autoForm}}
+</template>

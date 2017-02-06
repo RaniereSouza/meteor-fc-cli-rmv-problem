@@ -11,4 +11,4 @@ To reproduce the error, just do the following steps:
 <br>
 <b>RESULT:</b> ALL the files from FileCollection (Images) are Removed (it can be confirmed in the MongoDB shell, running "meteor mongo" and looking at the images.files Collection).
 
-The lines where the Remove operation is executed are highlighted at lines 132 and 175 from the file client/components/eventsForm.js
+The lines where the Remove operation is executed are highlighted at lines 132 and 175 from the file <a href="https://github.com/RaniereSouza/meteor-fc-cli-rmv-problem/blob/master/client/components/eventsForm.js">client/components/eventsForm.js</a>

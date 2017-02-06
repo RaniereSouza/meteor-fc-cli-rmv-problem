@@ -12,13 +12,16 @@ var imgToUpload,
 	previousImageId,
 	currentTemplateInstance;
 
+//AutoForm utility hooks, used to trigger some actions before/during/after the submission and database operation process
 AutoForm.hooks({
 	eventsForm: {
+		//defining custom hooks to manipulate Event documents before they actually go to the database
 		before: {
 			insert: function (doc) {
 
 				let context = this;
 
+				//if the 'fileAdded' resumable event handler was triggered, the global imgToUpload must be not empty
 				if (imgToUpload) {
 
 					console.log('try to insert new image');
@@ -40,12 +43,14 @@ AutoForm.hooks({
 
 							sweetAlert('Warning!', 'Image upload failed\n' + err.message, 'error');
 
+							//this cancels the submission of AutoForm, and no operation in collection Events is executed
 							context.result(false);
 						}
 						else {
 
 							console.log(_id);
 
+							//add event handler for succesful upload of files in resumable queue
 							Images.resumable.on('fileSuccess', function fileSuccessFromEventInsert (file) {
 
 								console.log('done!');
@@ -54,11 +59,14 @@ AutoForm.hooks({
 
 								imgToUpload = undefined;
 
+								//adding the foreign key to the Event document
 								doc['imageId'] = _id._str;
 
+								//proceeding with the AutoForm submission
 								context.result(doc);	
 							});
 							
+							//add event handler for error during upload of files in resumable queue
 							Images.resumable.on('fileError', function fileErrorFromEventInsert (file, message) {
 
 								console.log('err2');
@@ -68,6 +76,7 @@ AutoForm.hooks({
 
 								sweetAlert('Warning!', 'Image upload failed\n' + message, 'error');
 
+								//this cancels the submission of AutoForm, and no operation in collection Events is executed
 								context.result(false);	
 							});
 
@@ -79,6 +88,7 @@ AutoForm.hooks({
 				}
 				else {
 
+					//proceeding with the AutoForm submission
 					context.result(doc);
 				}
 			},
@@ -87,6 +97,7 @@ AutoForm.hooks({
 				let context = this,
 					instance = currentTemplateInstance;
 
+				//if the 'fileAdded' resumable event handler was triggered, the global imgToUpload must be not empty
 				if (imgToUpload) {
 
 					console.log('try to insert new image');
@@ -108,6 +119,7 @@ AutoForm.hooks({
 
 							sweetAlert('Warning!', 'Image upload failed\n' + err.message, 'error');
 
+							//this cancels the submission of AutoForm, and no operation in collection Events is executed
 							context.result(false);
 						}
 						else {
@@ -133,13 +145,16 @@ AutoForm.hooks({
 									Images.remove(previousImageObjectID);
 								}
 
+								//adding the foreign key to the Event document
 								doc.$set['imageId'] = _id._str;
 
+								//granting that no unset operation happens to the foreign key
 								if (doc.$unset) {
 
 									delete doc.$unset.imageId;
 								}
 
+								//proceeding with the AutoForm submission
 								context.result(doc);	
 							});
 							
@@ -153,6 +168,7 @@ AutoForm.hooks({
 
 								sweetAlert('Warning!', 'Image upload failed\n' + message, 'error');
 
+								//this cancels the submission of AutoForm, and no operation in collection Events is executed
 								context.result(false);	
 							});
 
@@ -164,7 +180,7 @@ AutoForm.hooks({
 				}
 				else {
 
-					//in case there is a previous image in this Event, remove it (only if preview is removed)
+					//in case there is a previous image in this Event, remove it (only if preview was removed)
 					if (typeof(previousImageId) !== 'undefined') {
 
 						if (instance.$('#cropped-banner-preview').html() === '') {
@@ -175,10 +191,12 @@ AutoForm.hooks({
 							//------ problem occurs HERE, when I try to remove JUST ONE image by _id (ObjectID), and it ends up removing everything ------//
 							Images.remove(previousImageObjectID);
 
+							//unsetting the foreign key in the Event document
 							doc.$set['imageId'] = '';
 						}
 					}
 
+					//proceeding with the AutoForm submission
 					context.result(doc);
 				}
 			},

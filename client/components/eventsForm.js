@@ -179,7 +179,7 @@ AutoForm.hooks({
 						}
 					}
 
-					context.result(newDoc);
+					context.result(doc);
 				}
 			},
 		},

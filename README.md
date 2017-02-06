@@ -9,6 +9,6 @@ To reproduce the error, just do the following steps:
 
 <b>EXPECTED:</b> When Changing or Removing the Banner, the application should Remove the previous Banner from the FileCollection (Images), and only this file.
 <br>
-<b>RESULT:</b> ALL the files from FileCollection (Images) are Removed.
+<b>RESULT:</b> ALL the files from FileCollection (Images) are Removed (it can be confirmed in the MongoDB shell, running "meteor mongo" and looking at the images.files Collection).
 
 The lines where the Remove operation is executed are highlighted at lines 132 and 175 from the file client/components/eventsForm.js

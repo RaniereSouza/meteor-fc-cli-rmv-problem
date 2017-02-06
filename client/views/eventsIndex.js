@@ -1,4 +1,5 @@
 import { Template } from 'meteor/templating';
+import { moment } from 'meteor/momentjs:moment';
 
 import './eventsIndex.html';
 
@@ -17,7 +18,7 @@ Template.eventsIndex.onDestroyed(function () {
 Template.eventsIndex.helpers({
   formatDateTime: function (date) {
   	return moment(date).format('LLL');
-  }
+  },
 });
 
 Template.eventsIndex.events({

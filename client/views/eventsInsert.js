@@ -1,7 +1,7 @@
 import { Template } from 'meteor/templating';
 
 import './eventsInsert.html';
-import '../components/eventosForm.html';
+import '../components/eventsForm.js';
 
 Template.eventsInsert.onCreated(function () {
   

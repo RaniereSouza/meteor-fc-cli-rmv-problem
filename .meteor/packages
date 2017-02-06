@@ -35,5 +35,6 @@ iron:router
 aldeed:simple-schema
 aldeed:collection2
 aldeed:autoform
+aldeed:autoform-bs-datetimepicker
 
 vsivsi:file-collection

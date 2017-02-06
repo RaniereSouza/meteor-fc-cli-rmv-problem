@@ -1,4 +1,8 @@
-//function to clean event handlers from Images.resumable, so they don't get duplicate
+import Images from '../lib/collections/Images.js';
+
+import './routes/eventsRoutes.js';
+
+//function to clean event handlers from Images.resumable, so they don't get duplicated
 cleanResumableEventHandlers = function (arrayOfEvents) {
 
   if (Images.resumable &&

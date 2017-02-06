@@ -2,6 +2,8 @@ import { Template } from 'meteor/templating';
 import { Mongo } from 'meteor/mongo';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { Router } from 'meteor/iron:router';
+import { sweetAlert } from 'meteor/kevohagan:sweetalert';
+
 import Images from '../../lib/collections/Images.js';
 
 import './eventsForm.html';
@@ -36,17 +38,12 @@ AutoForm.hooks({
 							//remove empty file from GridFS
 							Images.remove(_id);
 
-							sweetAlert('Warning!', 'Image upload failed', 'error');
+							sweetAlert('Warning!', 'Image upload failed\n' + err.message, 'error');
 
 							context.result(false);
 						}
 						else {
 
-							//Images.resumable.off('fileSuccess');
-							//Images.resumable.off('fileError');
-
-							//console.log("fileObj._id");
-							//console.log(fileObj._id);
 							console.log(_id);
 
 							Images.resumable.on('fileSuccess', function fileSuccessFromEventInsert (file) {
@@ -57,19 +54,19 @@ AutoForm.hooks({
 
 								imgToUpload = undefined;
 
-								newDoc['imageId'] = _id._str;
+								doc['imageId'] = _id._str;
 
-								context.result(newDoc);	
+								context.result(doc);	
 							});
 							
-							Images.resumable.on('fileError', function fileErrorFromEventInsert (file) {
+							Images.resumable.on('fileError', function fileErrorFromEventInsert (file, message) {
 
 								console.log('err2');
 
 								//remove empty file from GridFS
 								Images.remove(_id);
 
-								sweetAlert('Warning!', 'Image upload failed', 'error');
+								sweetAlert('Warning!', 'Image upload failed\n' + message, 'error');
 
 								context.result(false);	
 							});
@@ -109,19 +106,15 @@ AutoForm.hooks({
 							//remove empty file from GridFS
 							Images.remove(_id);
 
-							sweetAlert('Warning!', 'Image upload failed', 'error');
+							sweetAlert('Warning!', 'Image upload failed\n' + err.message, 'error');
 
 							context.result(false);
 						}
 						else {
 
-							//Images.resumable.off('fileSuccess');
-							//Images.resumable.off('fileError');
-
-							//console.log("fileObj._id");
-							//console.log(fileObj._id);
 							console.log(_id);
 
+							//add event handler for succesful upload of files in resumable queue
 							Images.resumable.on('fileSuccess', function fileSuccessFromEventUpdate (file) {
 
 								console.log('done!');
@@ -130,31 +123,35 @@ AutoForm.hooks({
 
 								imgToUpload = undefined;
 
+								//in case there is a previous image in this Event, remove it
 								if (typeof(previousImageId) !== 'undefined') {
 
+									//build the ObjectID from the foreign key previously saved in Event
 								   	let previousImageObjectID = new Mongo.ObjectID(previousImageId);
 
+								   	//------ problem occurs HERE, when I try to remove JUST ONE image by _id (ObjectID), and it ends up removing everything ------//
 									Images.remove(previousImageObjectID);
 								}
 
-								newDoc.$set['imageId'] = _id._str;
+								doc.$set['imageId'] = _id._str;
 
-								if (newDoc.$unset) {
+								if (doc.$unset) {
 
-									delete newDoc.$unset.imageId;
+									delete doc.$unset.imageId;
 								}
 
-								context.result(newDoc);	
+								context.result(doc);	
 							});
 							
-							Images.resumable.on('fileError', function fileErrorFromEventUpdate (file) {
+							//add event handler for error during upload of files in resumable queue
+							Images.resumable.on('fileError', function fileErrorFromEventUpdate (file, message) {
 
 								console.log('err2');
 
-								//remove arquivo vazio do GridFS
+								//remove empty file from GridFS
 								Images.remove(_id);
 
-								sweetAlert('Warning!', 'Image upload failed', 'error');
+								sweetAlert('Warning!', 'Image upload failed\n' + message, 'error');
 
 								context.result(false);	
 							});
@@ -167,15 +164,18 @@ AutoForm.hooks({
 				}
 				else {
 
-					if (typeof(previous_imageId) !== 'undefined') {
+					//in case there is a previous image in this Event, remove it (only if preview is removed)
+					if (typeof(previousImageId) !== 'undefined') {
 
 						if (instance.$('#cropped-banner-preview').html() === '') {
 
+							//build the ObjectID from the foreign key previously saved in Event
 							let previousImageObjectID = new Mongo.ObjectID(previousImageId);
 
+							//------ problem occurs HERE, when I try to remove JUST ONE image by _id (ObjectID), and it ends up removing everything ------//
 							Images.remove(previousImageObjectID);
 
-							newDoc.$set['imageId'] = '';
+							doc.$set['imageId'] = '';
 						}
 					}
 
@@ -195,17 +195,47 @@ Template.eventsForm.onCreated(function () {
 	currentTemplateInstance = this;
 
 	Images.resumable.cancel();
+	//cleaning event handlers from Images.resumable just so they don't get duplicated
 	cleanResumableEventHandlers(['fileadded', 'filesuccess', 'fileerror']);
 });
 
 Template.eventsForm.onRendered(function () {
-  
+
+	let instance = this;
+  	
+  	//add event handler to new file in resumable queue; just pass it to imgToUpload global
     Images.resumable.on('fileAdded', function fileAddedFromEvent (file) {
 
 		imgToUpload = file;
 
 		console.log('imgToUpload:', imgToUpload);
 	});
+
+    //check in update if there's a previous imageId in the Event and pass it to previousImageId global
+	if ((typeof(instance.data.model) !== 'undefined') &&
+	   instance.data.model.imageId) {
+
+	 	previousImageId = instance.data.model.imageId;
+
+	 	//console.log(previous_imageId);
+
+	 	//get existing image url and render in '#cropped-banner-preview'
+	 	let imgUrl = instance.data.model.image().url;
+
+		//console.log(imgUrl);
+
+		if ((typeof(imgUrl) !== 'undefined') && imgUrl) {
+
+			instance.$('#cropped-banner-preview').html(
+				'<img src="' +
+				imgUrl +
+				'">'
+			);
+
+			instance.$('#cropped-banner-remove').removeClass('hidden');
+			instance.$('#cropped-banner-add').text('Change Banner');
+		}
+	}
 });
 
 Template.eventsForm.onDestroyed(function () {
@@ -325,7 +355,7 @@ Template.eventsForm.events({
 		//clean upload queue if there was another image before
 		Images.resumable.cancel();
 
-		//canvas to blob here
+		//canvas to blob here; just add the blob to resumable queue
 		crop.toBlob(function (blob) {
 
 			//imgToUpload = blob;
@@ -336,19 +366,16 @@ Template.eventsForm.events({
 		});
 		
 		t.$('#cropped-banner-remove').removeClass('hidden');
-		t.$('#cropped-banner-add').text('Alterar Banner');
+		t.$('#cropped-banner-add').text('Change Banner');
 
 		t.$('#cropBannerModal').modal('hide');
-		// t.$('#cropBannerModal .partner-crop-img-label, ' +
-		// 	'#cropBannerModal #partner-crop-img-preview, ' +
-		// 	'#cropBannerModal .partner-upload-img-btn').removeClass('hidden');
 	},
 	'click #cropped-banner-remove': function (e, t) {
 
 		e.preventDefault();
 
 		t.$('#cropped-banner-preview').html('');
-		t.$('#cropped-banner-add').text('Adicionar Banner');
+		t.$('#cropped-banner-add').text('Add Banner');
 		$(e.target).addClass('hidden');
 
 		imgToUpload = undefined;

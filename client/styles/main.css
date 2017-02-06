@@ -1,1 +1,48 @@
 /* CSS declarations go here */
+header  {
+	height: 70px;
+	background-color: aquamarine;
+}
+
+header h1 {
+	font-weight: 300;
+}
+
+footer {
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	/* position: absolute; */
+	/* bottom: 0; */
+	height: 30px;
+	width: 100%;
+	background-color: aliceblue;
+}
+
+footer p {
+	padding: 0;
+	margin:  0;
+}
+
+.main-content {
+	min-height: calc(100vh - 100px);
+	padding-top: 15px;
+}
+
+.event-wrapper {
+	border:  1px solid #ccc;
+	margin-bottom: 15px;
+	padding-top: 10px;
+}
+
+.event-wrapper .rmv-event {
+	cursor: not-allowed;
+}
+
+#eventsForm {
+	padding: 15px 0;
+}
+
+#cropBannerModal #partner-image-upload {
+	display: none;
+}

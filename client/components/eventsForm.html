@@ -41,24 +41,34 @@
 	</div>
 
 	{{#autoForm id="eventsForm" type=formType collection=collectionName doc=model}}
+		
+		<fieldset>
+			<div class="form-group col-md-12">
 
-		<div class="form-group col-md-12">
+				<label for="">Image (best size 500x500)</label>
 
-			<label for="">Image (best size 500x500)</label>
+				<br>
 
-			<br>
+				<button id="cropped-banner-add" class="btn btn-default" data-toggle="modal" data-target="#cropBannerModal">Add Banner</button>
 
-			<button id="cropped-banner-add" class="btn btn-default" data-toggle="modal" data-target="#cropBannerModal">Add Banner</button>
+				<button id="cropped-banner-remove" class="btn btn-danger hidden">Remove Banner</button>
 
-			<button id="cropped-banner-remove" class="btn btn-danger hidden">Remove Banner</button>
+				<div id="cropped-banner-preview" class=""></div>  
+		    </div>
+			
+			<div class="col-md-12">
+				{{> afQuickField name="name"}}
+			</div>
 
-			<div id="cropped-banner-preview" class=""></div>  
-	    </div>
+			<div class="col-md-12">
+				{{> afQuickField name="date" type="bootstrap-datetimepicker"}}
+			</div>
 
-		{{> afQuickField name="name"}}
-
-		{{> afQuickField name="date" type="bootstrap-datetimepicker"}}
-
-		{{> afQuickField name="description" rows=5}}
+			<div class="col-md-12">
+				{{> afQuickField name="description" rows=5}}
+			</div>
+		</fieldset>
+		<button type="submit" class="btn btn-success">Save</button>
+		<a href="{{pathFor 'eventsIndex'}}" class="btn btn-default">Back</a>
 	{{/autoForm}}
 </template>

@@ -1,9 +1,13 @@
 import { Meteor } from 'meteor/meteor';
 import { Router } from 'meteor/iron:router';
+
 import EventsController from '../../lib/controllers/EventsController.js';
+
+import '../layouts/mainLayout.js';
 
 Router.route('/', {
 	name: 'eventsIndex',
+	layoutTemplate: 'mainLayout',
 	controller: EventsController,
 	action: 'index',
 	subscriptions: function () {
@@ -11,8 +15,9 @@ Router.route('/', {
 	},
 });
 
-Router.route('/insert', {
+Router.route('/events/insert', {
 	name: 'eventsInsert',
+	layoutTemplate: 'mainLayout',
 	controller: EventsController,
 	action: 'insert',
 	/*subscriptions: function () {
@@ -20,11 +25,17 @@ Router.route('/insert', {
 	},*/
 });
 
-Router.route('/update/:_id', {
+Router.route('/events/update/:_id?', {
 	name: 'eventsUpdate',
+	layoutTemplate: 'mainLayout',
 	controller: EventsController,
 	action: 'update',
 	subscriptions: function () {
-		return Meteor.subscribe('events.update', this.getId());
+
+		let instance = this;
+
+		//console.log("Router instance:", instance);
+
+		return Meteor.subscribe('events.update', instance.params._id);
 	},
 });

@@ -141,7 +141,7 @@ AutoForm.hooks({
 									//build the ObjectID from the foreign key previously saved in Event
 								   	let previousImageObjectID = new Mongo.ObjectID(previousImageId);
 
-								   	//------ problem occurs HERE, when I try to remove JUST ONE image by _id (ObjectID), and it ends up removing everything ------//
+								   	//removing the previous image
 									Images.remove(previousImageObjectID);
 								}
 
@@ -188,7 +188,7 @@ AutoForm.hooks({
 							//build the ObjectID from the foreign key previously saved in Event
 							let previousImageObjectID = new Mongo.ObjectID(previousImageId);
 
-							//------ problem occurs HERE, when I try to remove JUST ONE image by _id (ObjectID), and it ends up removing everything ------//
+							//removing the previous image
 							Images.remove(previousImageObjectID);
 
 							//unsetting the foreign key in the Event document
@@ -258,6 +258,9 @@ Template.eventsForm.onRendered(function () {
 
 Template.eventsForm.onDestroyed(function () {
   
+  imgToUpload = undefined;
+  previousImageId = undefined;
+  currentTemplateInstance = undefined;
 });
 
 Template.eventsForm.helpers({

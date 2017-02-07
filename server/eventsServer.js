@@ -1,4 +1,5 @@
 import { Meteor } from 'meteor/meteor';
+
 import Events from '../lib/collections/Events.js';
 
 

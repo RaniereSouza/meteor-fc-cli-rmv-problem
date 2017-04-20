@@ -26,6 +26,8 @@ AutoForm.hooks({
 
 					console.log('try to insert new image');
 
+					console.log('queue of files to upload:', Images.resumable.files);
+
 					Images.insert({
 						_id: new Mongo.ObjectID(imgToUpload.uniqueIdentifier),
 						filename: 'images-' + imgToUpload.uniqueIdentifier,
@@ -101,6 +103,8 @@ AutoForm.hooks({
 				if (imgToUpload) {
 
 					console.log('try to insert new image');
+
+					console.log('queue of files to upload:', Images.resumable.files);
 
 					Images.insert({
 						_id: new Mongo.ObjectID(imgToUpload.uniqueIdentifier),
@@ -380,11 +384,33 @@ Template.eventsForm.events({
 		crop.toBlob(function (blob) {
 
 			//imgToUpload = blob;
+			console.log('blob:', blob);
+
 			Images.resumable.addFile(blob);
 
 			//console.log("imgToUpload inside ")
 			//console.log("imgToUpload:", imgToUpload);
 		});
+
+		//canvas > to dataURI > to blob here; just add the blob to resumable queue
+		/*function dataURItoBlob (dataURI) {
+
+		    let byteString = atob(dataURI.split(',')[1]),
+		        mimeString = dataURI.split(",")[0].split(":")[1].split(";")[0],
+		        ab = new ArrayBuffer(byteString.length),
+		        ia = new Uint8Array(ab);
+
+		    for (var i = 0; i < byteString.length; i++) {
+		        ia[i] = byteString.charCodeAt(i);
+		    }
+
+		    return new Blob([ab], { type: mimeString });
+		}
+
+		let blob = dataURItoBlob(crop.toDataURL("image/jpeg"));
+		blob.name = "image.jpeg";
+		console.log('blob:', blob);
+		Images.resumable.addFile(blob); // my file collection name is Images*/
 		
 		t.$('#cropped-banner-remove').removeClass('hidden');
 		t.$('#cropped-banner-add').text('Change Banner');

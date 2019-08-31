@@ -1,5 +1,5 @@
 # meteor-fc-cli-rmv-problem
-Minimal reproduction of a (possible) error happening within the Client side <code>.remove()</code> operation of <code>FileCollection</code> Meteor package
+(Not so) Minimal reproduction of an (possible) error happening within the Client side <code>.remove()</code> operation of <code>FileCollection</code> Meteor package
 
 (refers to <a href="https://github.com/vsivsi/meteor-file-collection/issues/152">Issue \#152</a> from the Meteor Atmosphere package <a href="https://github.com/vsivsi/meteor-file-collection">vsivsi:file-collection</a>)
 
